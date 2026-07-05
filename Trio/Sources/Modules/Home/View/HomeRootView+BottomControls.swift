@@ -6,15 +6,18 @@ import SwiftUI
 
 extension Home.RootView {
     /// The bottom-anchored controls zone, hosted in the main view's bottom
-    /// `safeAreaInset` so it can never be covered by the tab bar.
-    @ViewBuilder func bottomControls(_ geo: GeometryProxy) -> some View {
+    /// `safeAreaInset` so it can never be covered by the tab bar. Both states
+    /// share one fixed slot, so swapping them is a crossfade, not a reflow.
+    @ViewBuilder func bottomControls() -> some View {
         Group {
             if let progress = state.bolusProgress {
-                bolusView(geo: geo, progress)
+                bolusView(progress)
             } else {
-                adjustmentView(geo: geo)
+                adjustmentView()
             }
         }
+        .frame(height: HomeLayout.bottomPanelHeight)
+        .animation(.easeInOut(duration: 0.2), value: state.bolusProgress != nil)
         // Keep clear air between the chart's x-axis labels and this zone —
         // on small screens the chart's own bottom padding resolves to 0.
         .padding(.top, 10)
@@ -297,7 +300,7 @@ extension Home.RootView {
         }
     }
 
-    @ViewBuilder func adjustmentView(geo: GeometryProxy) -> some View {
+    @ViewBuilder func adjustmentView() -> some View {
         ZStack {
             /// rectangle as background
             RoundedRectangle(cornerRadius: 15)
@@ -311,7 +314,7 @@ extension Home.RootView {
                 )
                 .background(colorScheme == .dark ? Color.chart.opacity(0.25) : Color.black.opacity(0.075))
                 .clipShape(RoundedRectangle(cornerRadius: 15))
-                .frame(height: geo.size.height * 0.08)
+                .frame(height: HomeLayout.bottomPanelHeight)
                 .shadow(
                     color: (overrideString != nil || tempTargetString != nil) ?
                         (
@@ -328,7 +331,7 @@ extension Home.RootView {
                         Spacer()
 
                         Divider()
-                            .frame(height: geo.size.height * 0.05)
+                            .frame(height: HomeLayout.bottomPanelHeight - 24)
                             .padding(.horizontal, 2)
 
                         adjustmentsTempTargetView(tempTargetString)
@@ -385,12 +388,12 @@ extension Home.RootView {
                 } message: {
                     Text("Select Adjustment")
                 }
-        }.padding(.horizontal, 10).padding(.bottom, UIDevice.adjustPadding(min: nil, max: 10))
+        }.padding(.horizontal, 10)
     }
 
     // MARK: Bolus progress
 
-    @ViewBuilder func bolusView(geo: GeometryProxy, _ progress: Decimal) -> some View {
+    @ViewBuilder func bolusView(_ progress: Decimal) -> some View {
         /// ensure that state.lastPumpBolus has a value, i.e. there is a last bolus done by the pump and not an external bolus
         /// - TRUE:  show the pump bolus
         /// - FALSE:  do not show a progress bar at all
@@ -411,7 +414,7 @@ extension Home.RootView {
                             .opacity(0.2)
                     )
                     .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .frame(height: geo.size.height * 0.08)
+                    .frame(height: HomeLayout.bottomPanelHeight)
                     .shadow(
                         color: colorScheme == .dark ? Color(red: 0.02745098039, green: 0.1098039216, blue: 0.1411764706) :
                             Color.black.opacity(0.33),
@@ -447,7 +450,6 @@ extension Home.RootView {
                     .padding(.trailing, 8)
             }
             .padding(.horizontal, 10)
-            .padding(.bottom, UIDevice.adjustPadding(min: nil, max: 10))
             .overlay(alignment: .bottom) {
                 BolusProgressBar(progress: progress)
                     .padding(.horizontal, 18)

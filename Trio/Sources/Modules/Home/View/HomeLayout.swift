@@ -14,11 +14,14 @@ import CoreGraphics
 enum HomeLayout {
     /// Zone B: pump panel / glucose bobble / loop status header.
     static let headerHeight: CGFloat = 150
-    /// Zone C: meal panel (IOB / COB / delivery rate) slot at default type.
+    /// Zone C: meal panel (IOB / COB / delivery rate) slot; the single
+    /// callout-sized row centers inside it up to the XXL type cap.
     static let mealSlotHeight: CGFloat = 44
-    /// Zone E: shared slot for the adjustment panel and bolus progress view,
-    /// sized to the taller of the two canonical states at default type.
-    static let bottomSlotHeight: CGFloat = 72
+    /// Zone E: fixed height of the rounded panel shared by the adjustment
+    /// view and the bolus progress view (previously 8% of screen height,
+    /// 48-65pt depending on device). Both canonical states' two-line content
+    /// fits at the XXL type cap.
+    static let bottomPanelHeight: CGFloat = 60
     /// Zone D: minimum usable chart height (basal + glucose + COB/IOB panes).
     static let chartMinHeight: CGFloat = 260
 }

@@ -105,15 +105,17 @@ extension Home {
                 // state changes never reflow the zones below.
                 .frame(height: HomeLayout.headerHeight)
 
-                mealPanel().padding(.top, UIDevice.adjustPadding(min: nil, max: 30))
-                    .padding(.bottom, UIDevice.adjustPadding(min: nil, max: 20))
+                mealPanel().frame(height: HomeLayout.mealSlotHeight)
 
                 mainChart(geo: geo)
             }
+            // Fill the screen so the bottom inset pins to the tab bar and the
+            // background covers the full height; the zones stay top-aligned.
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             // Bottom controls live in the safe area, so the tab bar can never
             // cover them regardless of how the zones above are sized.
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                bottomControls(geo)
+                bottomControls()
             }
             .background(appState.trioBackgroundColor(for: colorScheme))
             .onReceive(
