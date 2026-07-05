@@ -449,12 +449,14 @@ extension Home.RootView {
                 }.padding(.horizontal, 10)
                     .padding(.trailing, 8)
             }
-            .padding(.horizontal, 10)
+            // Anchored to the panel itself (not the padded outer bounds) so
+            // the bar hugs the panel's bottom edge inside its rounded corners.
             .overlay(alignment: .bottom) {
                 BolusProgressBar(progress: progress)
-                    .padding(.horizontal, 18)
-                    .padding(.bottom, 9)
-            }.clipShape(RoundedRectangle(cornerRadius: 15))
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 6)
+            }
+            .padding(.horizontal, 10)
         }
     }
 }
