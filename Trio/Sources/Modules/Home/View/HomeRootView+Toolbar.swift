@@ -15,6 +15,18 @@ extension Home.RootView {
                 )
             }
         }
+        // Warnings render in the fixed-height navigation bar, so showing or
+        // hiding them can never reflow the dashboard below.
+        ToolbarItem(placement: .principal) {
+            HStack(spacing: 16) {
+                if notificationsDisabled {
+                    notificationsOffWarning
+                }
+                if let badgeImage = state.pumpStatusBadgeImage, let badgeColor = state.pumpStatusBadgeColor {
+                    pumpTimezoneWarning(badgeImage, badgeColor)
+                }
+            }
+        }
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 state.isLegendPresented.toggle()
@@ -27,74 +39,28 @@ extension Home.RootView {
         }
     }
 
-    @ViewBuilder func pumpTimezoneView(_ badgeImage: UIImage, _ badgeColor: Color) -> some View {
-        HStack {
-            Image(uiImage: badgeImage.withRenderingMode(.alwaysTemplate))
-                .font(.system(size: 14))
-                .colorMultiply(badgeColor)
-            Text(String(localized: "Time Change Detected", comment: ""))
-                .bold()
-                .font(.system(size: 14))
-                .foregroundStyle(badgeColor)
+    /// Safety notifications are disabled; tapping opens the app's iOS settings.
+    private var notificationsOffWarning: some View {
+        Button {
+            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+        } label: {
+            Image(systemName: "bell.slash.fill")
+                .foregroundStyle(Color.red)
         }
-        .onTapGesture {
+        .accessibilityLabel(String(localized: "Safety Notifications are OFF. Fix now by turning Notifications ON."))
+    }
+
+    /// The pump's clock differs from the phone's; tapping opens pump settings.
+    private func pumpTimezoneWarning(_ badgeImage: UIImage, _ badgeColor: Color) -> some View {
+        Button {
             if state.pumpDisplayState != nil {
                 // sends user to pump settings
                 state.shouldDisplayPumpSetupSheet.toggle()
             }
+        } label: {
+            Image(uiImage: badgeImage.withRenderingMode(.alwaysTemplate))
+                .colorMultiply(badgeColor)
         }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .padding(.vertical, 5)
-        .padding(.horizontal, 10)
-        .overlay(
-            Capsule()
-                .stroke(badgeColor.opacity(0.4), lineWidth: 2)
-        )
-    }
-
-    @ViewBuilder func alertSafetyNotificationsView(geo: GeometryProxy) -> some View {
-        ZStack {
-            /// rectangle as background
-            RoundedRectangle(cornerRadius: 15)
-                .fill(
-                    Color(
-                        red: 0.9,
-                        green: 0.133333333,
-                        blue: 0.2156862745
-                    )
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 15))
-                .frame(height: geo.size.height * safeAreaSize)
-                .coordinateSpace(name: "alertSafetyNotificationsView")
-                .shadow(
-                    color: colorScheme == .dark ? Color(red: 0.02745098039, green: 0.1098039216, blue: 0.1411764706) :
-                        Color.black.opacity(0.33),
-                    radius: 3
-                )
-            HStack {
-                Spacer()
-                VStack {
-                    Text("⚠️ Safety Notifications are OFF")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .fontDesign(.rounded)
-                        .foregroundStyle(.white.gradient)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("Fix now by turning Notifications ON.")
-                        .font(.footnote)
-                        .fontDesign(.rounded)
-                        .foregroundStyle(.white.gradient)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }.padding(.leading, 5)
-                Spacer()
-                Image(systemName: "chevron.right").foregroundColor(.white)
-                    .font(.headline)
-            }.padding(.horizontal, 10)
-                .padding(.trailing, 8)
-                .onTapGesture {
-                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                }
-        }.padding(.horizontal, 10)
-            .padding(.top, 0)
+        .accessibilityLabel(String(localized: "Time Change Detected", comment: ""))
     }
 }

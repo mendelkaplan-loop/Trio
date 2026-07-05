@@ -7,7 +7,6 @@ import Swinject
 extension Home {
     struct RootView: BaseView {
         let resolver: Resolver
-        let safeAreaSize: CGFloat = 0.08
 
         @Environment(\.managedObjectContext) var moc
         @Environment(\.colorScheme) var colorScheme
@@ -63,7 +62,6 @@ extension Home {
             ZStack {
                 MainChartView(
                     geo: geo,
-                    safeAreaSize: notificationsDisabled == true ? safeAreaSize : 0,
                     units: state.units,
                     highGlucose: state.highGlucose,
                     lowGlucose: state.lowGlucose,
@@ -102,16 +100,10 @@ extension Home {
                         }.padding(.leading, 20)
                     }
                 }
-                .padding(.top, 10)
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    if notificationsDisabled {
-                        alertSafetyNotificationsView(geo: geo)
-                    }
-                    if let badgeImage = state.pumpStatusBadgeImage, let badgeColor = state.pumpStatusBadgeColor {
-                        pumpTimezoneView(badgeImage, badgeColor)
-                            .padding(.horizontal, 20)
-                    }
-                }
+                // Every header state (configured CGM, BluetoothRequiredView,
+                // no CGM/pump) renders centered inside the same fixed slot, so
+                // state changes never reflow the zones below.
+                .frame(height: HomeLayout.headerHeight)
 
                 mealPanel().padding(.top, UIDevice.adjustPadding(min: nil, max: 30))
                     .padding(.bottom, UIDevice.adjustPadding(min: nil, max: 20))
@@ -140,6 +132,10 @@ extension Home {
         @ViewBuilder func mainView() -> some View {
             GeometryReader { geo in
                 mainViewElements(geo)
+                    // The dashboard is a fixed, non-scrolling layout; beyond
+                    // XXL the fixed-size bobble stays put while text zones
+                    // outgrow their slots, so cap the dashboard content here.
+                    .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             }
             .onAppear {
                 configureView()

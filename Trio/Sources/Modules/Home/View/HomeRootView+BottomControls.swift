@@ -15,6 +15,9 @@ extension Home.RootView {
                 adjustmentView(geo: geo)
             }
         }
+        // Keep clear air between the chart's x-axis labels and this zone —
+        // on small screens the chart's own bottom padding resolves to 0.
+        .padding(.top, 10)
         .padding(.bottom, 10)
     }
 

@@ -25,7 +25,6 @@ private let scrubPointHaptic = UISelectionFeedbackGenerator()
 /// content is never re-evaluated mid-gesture.
 struct MainChartView: View {
     var geo: GeometryProxy
-    var safeAreaSize: CGFloat
     var units: GlucoseUnits
     var highGlucose: Decimal
     var lowGlucose: Decimal
@@ -176,7 +175,7 @@ extension MainChartView {
     private var viewportWidth: CGFloat { max(geo.size.width, 1) }
 
     var basalHeight: CGFloat { geo.size.height * 0.05 }
-    var mainHeight: CGFloat { geo.size.height * (0.33 - safeAreaSize) }
+    var mainHeight: CGFloat { geo.size.height * 0.33 }
     var cobIobHeight: CGFloat { geo.size.height * 0.12 }
 
     private var totalSeconds: TimeInterval {
