@@ -59,30 +59,6 @@ extension Home {
             }
         }
 
-        @ViewBuilder private func tappableButton(
-            buttonColor: Color,
-            label: String,
-            iconString: String,
-            action: @escaping () -> Void
-        ) -> some View {
-            Button(action: {
-                action()
-            }) {
-                HStack {
-                    Image(systemName: iconString)
-                    Text(label)
-                }
-                .font(.footnote)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 10)
-                .foregroundStyle(buttonColor)
-                .overlay(
-                    Capsule()
-                        .stroke(buttonColor.opacity(0.4), lineWidth: 2)
-                )
-            }
-        }
-
         @ViewBuilder func mainChart(geo: GeometryProxy) -> some View {
             ZStack {
                 MainChartView(
@@ -141,31 +117,11 @@ extension Home {
                     .padding(.bottom, UIDevice.adjustPadding(min: nil, max: 20))
 
                 mainChart(geo: geo)
-
-//                HStack {
-//                    tappableButton(
-//                        buttonColor: (colorScheme == .dark ? Color.white : Color.black).opacity(0.8),
-//                        label: String(localized: "Stats", comment: "Stats icon in main view"),
-//                        iconString: statsIconString,
-//                        action: { state.showModal(for: .statistics) }
-//                    )
-//
-//                    Spacer()
-//
-//                    tappableButton(
-//                        buttonColor: (colorScheme == .dark ? Color.white : Color.black).opacity(0.8),
-//                        label: String(localized: "Info", comment: "Info icon in main view"),
-//                        iconString: "info",
-//                        action: { state.isLegendPresented.toggle() }
-//                    )
-//                }.padding([.horizontal, .bottom])
-
-                if let progress = state.bolusProgress {
-                    bolusView(geo: geo, progress)
-                        .padding(.bottom, UIDevice.adjustPadding(min: nil, max: 40))
-                } else {
-                    adjustmentView(geo: geo).padding(.bottom, UIDevice.adjustPadding(min: nil, max: 40))
-                }
+            }
+            // Bottom controls live in the safe area, so the tab bar can never
+            // cover them regardless of how the zones above are sized.
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                bottomControls(geo)
             }
             .background(appState.trioBackgroundColor(for: colorScheme))
             .onReceive(
@@ -188,8 +144,9 @@ extension Home {
             .onAppear {
                 configureView()
             }
-            .navigationTitle("Home")
-            .navigationBarHidden(true)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { homeToolbarContent }
             .blur(radius: state.isLoopStatusPresented ? 3 : 0)
             .sheet(isPresented: $state.isLoopStatusPresented) {
                 LoopStatusView(state: state)

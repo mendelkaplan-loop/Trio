@@ -4,6 +4,29 @@ import UIKit
 // MARK: - Toolbar: Stats/Info buttons and conditional warning items (notifications off, pump timezone)
 
 extension Home.RootView {
+    @ToolbarContentBuilder var homeToolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                state.showModal(for: .statistics)
+            } label: {
+                Label(
+                    String(localized: "Stats", comment: "Stats icon in main view"),
+                    systemImage: statsIconString
+                )
+            }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                state.isLegendPresented.toggle()
+            } label: {
+                Label(
+                    String(localized: "Info", comment: "Info icon in main view"),
+                    systemImage: "info.circle"
+                )
+            }
+        }
+    }
+
     @ViewBuilder func pumpTimezoneView(_ badgeImage: UIImage, _ badgeColor: Color) -> some View {
         HStack {
             Image(uiImage: badgeImage.withRenderingMode(.alwaysTemplate))

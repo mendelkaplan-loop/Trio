@@ -5,6 +5,19 @@ import SwiftUI
 // MARK: - Zone E: bottom controls (adjustment panel / bolus progress)
 
 extension Home.RootView {
+    /// The bottom-anchored controls zone, hosted in the main view's bottom
+    /// `safeAreaInset` so it can never be covered by the tab bar.
+    @ViewBuilder func bottomControls(_ geo: GeometryProxy) -> some View {
+        Group {
+            if let progress = state.bolusProgress {
+                bolusView(geo: geo, progress)
+            } else {
+                adjustmentView(geo: geo)
+            }
+        }
+        .padding(.bottom, 10)
+    }
+
     // MARK: Formatters
 
     var bolusProgressFormatter: NumberFormatter {
