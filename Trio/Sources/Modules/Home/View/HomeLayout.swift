@@ -22,6 +22,11 @@ enum HomeLayout {
     /// 48-65pt depending on device). Both canonical states' two-line content
     /// fits at the XXL type cap.
     static let bottomPanelHeight: CGFloat = 60
+    /// Zone E: clear air above (chart x-axis labels) and below (tab bar).
+    static let bottomZonePadding: CGFloat = 10
+    /// Zone E: total height including padding, as reserved in the chart's
+    /// height calculation.
+    static var bottomZoneHeight: CGFloat { bottomPanelHeight + 2 * bottomZonePadding }
     /// Zone D: minimum usable chart height (basal + glucose + COB/IOB panes).
     static let chartMinHeight: CGFloat = 260
 }

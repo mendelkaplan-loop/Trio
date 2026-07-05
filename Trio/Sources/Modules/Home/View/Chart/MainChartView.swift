@@ -25,6 +25,9 @@ private let scrubPointHaptic = UISelectionFeedbackGenerator()
 /// content is never re-evaluated mid-gesture.
 struct MainChartView: View {
     var geo: GeometryProxy
+    /// Height allocated to the chart stack by the Home layout (the flexible
+    /// remainder after the fixed zones).
+    var chartHeight: CGFloat
     var units: GlucoseUnits
     var highGlucose: Decimal
     var lowGlucose: Decimal
@@ -174,9 +177,12 @@ struct MainChartView: View {
 extension MainChartView {
     private var viewportWidth: CGFloat { max(geo.size.width, 1) }
 
-    var basalHeight: CGFloat { geo.size.height * 0.05 }
-    var mainHeight: CGFloat { geo.size.height * 0.33 }
-    var cobIobHeight: CGFloat { geo.size.height * 0.12 }
+    // Pane splits of the chart's own allocation, preserving the proportions
+    // of the previous screen-height fractions (0.05 / 0.33 / 0.12 = 10% /
+    // 66% / 24% of the 50% chart block).
+    var basalHeight: CGFloat { chartHeight * 0.10 }
+    var mainHeight: CGFloat { chartHeight * 0.66 }
+    var cobIobHeight: CGFloat { chartHeight * 0.24 }
 
     private var totalSeconds: TimeInterval {
         max(state.endMarker.timeIntervalSince(state.startMarker), 1)

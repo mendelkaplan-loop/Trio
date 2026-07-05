@@ -59,9 +59,16 @@ extension Home {
         }
 
         @ViewBuilder func mainChart(geo: GeometryProxy) -> some View {
+            // The chart is the only flexible zone: it takes whatever height
+            // the fixed slots leave over, floored at a usable minimum.
+            let chartHeight = max(
+                geo.size.height - HomeLayout.headerHeight - HomeLayout.mealSlotHeight - HomeLayout.bottomZoneHeight,
+                HomeLayout.chartMinHeight
+            )
             ZStack {
                 MainChartView(
                     geo: geo,
+                    chartHeight: chartHeight,
                     units: state.units,
                     highGlucose: state.highGlucose,
                     lowGlucose: state.lowGlucose,
@@ -73,7 +80,6 @@ extension Home {
                     state: state
                 )
             }
-            .padding(.bottom, UIDevice.adjustPadding(min: 0, max: nil))
         }
 
         @ViewBuilder func mainViewElements(_ geo: GeometryProxy) -> some View {
@@ -297,39 +303,6 @@ extension Home {
                 }
             }
         }
-    }
-}
-
-extension UIDevice {
-    public enum DeviceSize: CGFloat {
-        case smallDevice = 667 // Height for 4" iPhone SE
-        case largeDevice = 852 // Height for 6.1" iPhone 15 Pro
-    }
-
-    @usableFromInline static func adjustPadding(
-        min: CGFloat? = nil,
-        max: CGFloat? = nil
-    ) -> CGFloat? {
-        if UIScreen.screenHeight > UIDevice.DeviceSize.smallDevice.rawValue {
-            if UIScreen.screenHeight >= UIDevice.DeviceSize.largeDevice.rawValue {
-                return max
-            } else {
-                return min != nil ?
-                    (max != nil ? max! * (UIScreen.screenHeight / UIDevice.DeviceSize.largeDevice.rawValue) : nil) : nil
-            }
-        } else {
-            return min
-        }
-    }
-}
-
-extension UIScreen {
-    static var screenHeight: CGFloat {
-        UIScreen.main.bounds.height
-    }
-
-    static var screenWidth: CGFloat {
-        UIScreen.main.bounds.width
     }
 }
 
