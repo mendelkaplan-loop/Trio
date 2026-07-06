@@ -456,7 +456,7 @@ extension Home.RootView {
             .overlay(alignment: .bottom) {
                 BolusProgressBar(progress: progress)
                     .padding(.horizontal, 8)
-                    .padding(.bottom, 6)
+                    .padding(.bottom, 2)
             }
             .padding(.horizontal, HomeLayout.bottomPanelHorizontalPadding)
         }
