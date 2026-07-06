@@ -5,9 +5,7 @@ import SwiftUI
 // MARK: - Zone E: bottom controls (adjustment panel / bolus progress)
 
 extension Home.RootView {
-    /// The bottom-anchored controls zone, hosted in the main view's bottom
-    /// `safeAreaInset` so it can never be covered by the tab bar. Both states
-    /// share one fixed slot, so swapping them is a crossfade, not a reflow.
+    /// One fixed slot for both states, so swapping is a crossfade, not a reflow.
     @ViewBuilder func bottomControls() -> some View {
         Group {
             if let progress = state.bolusProgress {
@@ -18,8 +16,6 @@ extension Home.RootView {
         }
         .frame(height: HomeLayout.bottomPanelHeight)
         .animation(.easeInOut(duration: 0.2), value: state.bolusProgress != nil)
-        // Keep clear air between the chart's x-axis labels and this zone —
-        // on small screens the chart's own bottom padding resolves to 0.
         .padding(.top, HomeLayout.bottomZoneTopPadding)
         .padding(.bottom, HomeLayout.bottomZoneBottomPadding)
     }
@@ -415,11 +411,11 @@ extension Home.RootView {
                 /// rectangle as background
                 RoundedRectangle(cornerRadius: 15)
                     .fill(
-                    .background(appState.trioBackgroundColor(for: colorScheme))
                         colorScheme == .dark ? Color(red: 0.03921568627, green: 0.133333333, blue: 0.2156862745) : Color
                             .insulin
                             .opacity(0.2)
                     )
+                    .background(appState.trioBackgroundColor(for: colorScheme))
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                     .frame(height: HomeLayout.bottomPanelHeight)
                     .shadow(
@@ -456,8 +452,7 @@ extension Home.RootView {
                 }.padding(.horizontal, 10)
                     .padding(.trailing, 8)
             }
-            // Anchored to the panel itself (not the padded outer bounds) so
-            // the bar hugs the panel's bottom edge inside its rounded corners.
+            // Anchored to the panel, inside its rounded bottom edge.
             .overlay(alignment: .bottom) {
                 BolusProgressBar(progress: progress)
                     .padding(.horizontal, 8)

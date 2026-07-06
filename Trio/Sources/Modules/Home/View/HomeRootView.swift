@@ -64,8 +64,7 @@ extension Home {
         }
 
         @ViewBuilder func mainChart(geo: GeometryProxy) -> some View {
-            // The chart is the only flexible zone: it takes whatever height
-            // the fixed slots leave over, floored at a usable minimum.
+            // The chart is the only flexible zone; it gets the floored remainder.
             let chartHeight = max(
                 geo.size.height - HomeLayout.headerTopPadding - HomeLayout.headerHeight - HomeLayout.mealSlotHeight
                     - HomeLayout.bottomZoneHeight - 2 * HomeLayout.chartVerticalPadding,
@@ -86,6 +85,7 @@ extension Home {
                     state: state
                 )
             }
+            .padding(.vertical, HomeLayout.chartVerticalPadding)
         }
 
         @ViewBuilder func mainViewElements(_ geo: GeometryProxy) -> some View {
@@ -130,7 +130,6 @@ extension Home {
         @ViewBuilder private func dashboardContent(_ geo: GeometryProxy) -> some View {
             VStack(spacing: 0) {
                 ZStack {
-            .padding(.vertical, HomeLayout.chartVerticalPadding)
                     if let apsManager = state.apsManager, let bluetoothManager = apsManager.bluetoothManager,
                        bluetoothManager.bluetoothAuthorization != .authorized
                     {
@@ -152,10 +151,9 @@ extension Home {
                         }.padding(.leading, 20)
                     }
                 }
-                // Every header state (configured CGM, BluetoothRequiredView,
-                // no CGM/pump) renders centered inside the same fixed slot, so
-                // state changes never reflow the zones below.
+                // Fixed slot: every header state renders centered, no reflow below.
                 .frame(height: HomeLayout.headerHeight)
+                .padding(.top, HomeLayout.headerTopPadding)
 
                 mealPanel().frame(height: HomeLayout.mealSlotHeight)
 
@@ -167,9 +165,7 @@ extension Home {
         @ViewBuilder func mainView() -> some View {
             GeometryReader { geo in
                 mainViewElements(geo)
-                    // The dashboard is a fixed, non-scrolling layout; beyond
-                    // XXL the fixed-size bobble stays put while text zones
-                    // outgrow their slots, so cap the dashboard content here.
+                    // Fixed layout: beyond XXL the zones stop fitting.
                     .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             }
             .onAppear {
@@ -178,6 +174,8 @@ extension Home {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { homeToolbarContent }
+            // Same chrome background as the tab bar.
+            .toolbarBackground(.visible, for: .navigationBar)
             .blur(radius: state.isLoopStatusPresented ? 3 : 0)
             .sheet(isPresented: $state.isLoopStatusPresented) {
                 LoopStatusView(state: state)
@@ -185,7 +183,6 @@ extension Home {
             .sheet(isPresented: $state.isLegendPresented) {
                 ChartLegendView(state: state)
             }
-                .padding(.top, HomeLayout.headerTopPadding)
             .sheet(isPresented: $showSnoozeSheet) {
                 SnoozeAlertsSheetView(resolver: resolver, isPresented: $showSnoozeSheet)
             }
@@ -208,9 +205,6 @@ extension Home {
                 } else {
                     PumpConfig.PumpSetupView(
                         pumpType: state.setupPumpType,
-            // Always-visible system bar background: the same chrome material
-            // and hairline separator the tab bar wears.
-            .toolbarBackground(.visible, for: .navigationBar)
                         pumpInitialSettings: state.pumpInitialSettings,
                         bluetoothManager: state.provider.apsManager.bluetoothManager!,
                         completionDelegate: state,

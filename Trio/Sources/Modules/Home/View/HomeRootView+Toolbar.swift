@@ -16,8 +16,7 @@ extension Home.RootView {
                 )
             }
         }
-        // Warnings render in the fixed-height navigation bar, so showing or
-        // hiding them can never reflow the dashboard below.
+        // Conditional warnings; the fixed-height bar means zero reflow below.
         ToolbarItem(placement: .principal) {
             HStack(spacing: 16) {
                 if notificationsDisabled {
@@ -50,8 +49,7 @@ extension Home.RootView {
         }
     }
 
-    /// `iconFirst` puts the icon on the outer screen edge: leading buttons
-    /// lead with the icon, trailing buttons end with it.
+    /// `iconFirst` puts the icon on the outer screen edge.
     private func toolbarButtonLabel(_ title: String, systemImage: String, iconFirst: Bool) -> some View {
         HStack(spacing: 4) {
             if iconFirst {
