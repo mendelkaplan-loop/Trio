@@ -183,6 +183,9 @@ extension Home {
                 } else {
                     PumpConfig.PumpSetupView(
                         pumpType: state.setupPumpType,
+            // Always-visible system bar background: the same chrome material
+            // and hairline separator the tab bar wears.
+            .toolbarBackground(.visible, for: .navigationBar)
                         pumpInitialSettings: state.pumpInitialSettings,
                         bluetoothManager: state.provider.apsManager.bluetoothManager!,
                         completionDelegate: state,

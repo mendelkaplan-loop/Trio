@@ -9,9 +9,10 @@ extension Home.RootView {
             Button {
                 state.showModal(for: .statistics)
             } label: {
-                Label(
-                    String(localized: "Stats", comment: "Stats icon in main view"),
-                    systemImage: statsIconString
+                toolbarButtonLabel(
+                    String(localized: "Statistics", comment: "Statistics button in main view toolbar"),
+                    systemImage: statsIconString,
+                    iconFirst: true
                 )
             }
         }
@@ -31,12 +32,37 @@ extension Home.RootView {
             Button {
                 state.isLegendPresented.toggle()
             } label: {
-                Label(
-                    String(localized: "Info", comment: "Info icon in main view"),
-                    systemImage: "info.circle"
+                toolbarButtonLabel(
+                    String(localized: "Glossary", comment: "Glossary button in main view toolbar"),
+                    systemImage: glossaryIconString,
+                    iconFirst: false
                 )
             }
         }
+    }
+
+    /// `questionmark.text.page` arrived with SF Symbols 6 (iOS 18).
+    private var glossaryIconString: String {
+        if #available(iOS 18, *) {
+            return "questionmark.text.page"
+        } else {
+            return "questionmark.circle"
+        }
+    }
+
+    /// `iconFirst` puts the icon on the outer screen edge: leading buttons
+    /// lead with the icon, trailing buttons end with it.
+    private func toolbarButtonLabel(_ title: String, systemImage: String, iconFirst: Bool) -> some View {
+        HStack(spacing: 4) {
+            if iconFirst {
+                Image(systemName: systemImage)
+                Text(title)
+            } else {
+                Text(title)
+                Image(systemName: systemImage)
+            }
+        }
+        .foregroundStyle(.primary)
     }
 
     /// Safety notifications are disabled; tapping opens the app's iOS settings.
