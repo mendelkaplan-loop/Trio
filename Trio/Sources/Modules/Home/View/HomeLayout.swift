@@ -24,6 +24,10 @@ enum HomeLayout {
     /// view and the bolus progress view (previously 8% of screen height,
     /// 48-65pt depending on device). Both canonical states' two-line content
     /// fits at the XXL type cap.
+    /// Pull distance that triggers the forced loop.
+    static let refreshTriggerDistance: CGFloat = 70
+    /// Indicator row height while the loop runs.
+    static let refreshIndicatorHeight: CGFloat = 40
     static let bottomPanelHeight: CGFloat = 60
     /// Zone E: horizontal inset of the panel, matching the visual margin of
     /// the header and meal panels.

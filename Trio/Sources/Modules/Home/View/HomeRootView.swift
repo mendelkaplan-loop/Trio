@@ -30,6 +30,11 @@ extension Home {
         @State var showSnoozeSheet: Bool = false
         @State var notificationsDisabled = false
 
+        // Pull-down-to-force-loop (see HomeRootView+Refresh.swift)
+        @State var pullOffset: CGFloat = 0
+        @State var isRefreshArmed = false
+        @State var isForcingLoop = false
+
         @FetchRequest(fetchRequest: OverrideStored.fetch(
             NSPredicate.lastActiveOverride,
             ascending: false,
@@ -84,6 +89,45 @@ extension Home {
         }
 
         @ViewBuilder func mainViewElements(_ geo: GeometryProxy) -> some View {
+            // Viewport-sized content: rubber-bands for the pull-down, never scrolls.
+            ScrollView(.vertical, showsIndicators: false) {
+                dashboardContent(geo)
+                    // Hold the indicator row open while the forced loop runs.
+                    .padding(.top, isForcingLoop ? HomeLayout.refreshIndicatorHeight : 0)
+                    .animation(.easeInOut(duration: 0.25), value: isForcingLoop)
+                    .background(
+                        GeometryReader { g in
+                            Color.clear.preference(
+                                key: HomePullOffsetKey.self,
+                                value: g.frame(in: .named("homeScroll")).minY
+                            )
+                        }
+                    )
+            }
+            .coordinateSpace(name: "homeScroll")
+            .scrollBounceBehavior(.always, axes: [.vertical])
+            .modifier(HomePullOffsetReader(onChange: handlePullChange))
+            .onPreferenceChange(HomePullOffsetKey.self) { handlePullChange($0) }
+            .overlay(alignment: .top) { pullToRefreshIndicator }
+            // Safe-area inset: the tab bar can never cover the controls.
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                bottomControls()
+            }
+            .background(appState.trioBackgroundColor(for: colorScheme))
+            .onReceive(
+                resolver.resolve(AlertPermissionsChecker.self)!.$notificationsDisabled,
+                perform: {
+                    if notificationsDisabled != $0 {
+                        notificationsDisabled = $0
+                        if notificationsDisabled {
+                            debug(.default, "notificationsDisabled")
+                        }
+                    }
+                }
+            )
+        }
+
+        @ViewBuilder private func dashboardContent(_ geo: GeometryProxy) -> some View {
             VStack(spacing: 0) {
                 ZStack {
             .padding(.vertical, HomeLayout.chartVerticalPadding)
@@ -117,26 +161,7 @@ extension Home {
 
                 mainChart(geo: geo)
             }
-            // Fill the screen so the bottom inset pins to the tab bar and the
-            // background covers the full height; the zones stay top-aligned.
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            // Bottom controls live in the safe area, so the tab bar can never
-            // cover them regardless of how the zones above are sized.
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                bottomControls()
-            }
-            .background(appState.trioBackgroundColor(for: colorScheme))
-            .onReceive(
-                resolver.resolve(AlertPermissionsChecker.self)!.$notificationsDisabled,
-                perform: {
-                    if notificationsDisabled != $0 {
-                        notificationsDisabled = $0
-                        if notificationsDisabled {
-                            debug(.default, "notificationsDisabled")
-                        }
-                    }
-                }
-            )
+            .frame(maxWidth: .infinity)
         }
 
         @ViewBuilder func mainView() -> some View {
