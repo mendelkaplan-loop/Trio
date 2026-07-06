@@ -312,7 +312,13 @@ extension Home.RootView {
                                 Color.insulin.opacity(0.1)
                         ) : Color.clear // Use clear and add the Material in the background
                 )
-                .background(colorScheme == .dark ? Color.chart.opacity(0.25) : Color.black.opacity(0.075))
+                // Opaque backgrounds, so nothing bleeds through during a pull-down.
+                .background(
+                    colorScheme == .dark
+                        ? Color(red: 0.03921568627, green: 0.133333333, blue: 0.2156862745)
+                        : Color.black.opacity(0.075)
+                )
+                .background(appState.trioBackgroundColor(for: colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 15))
                 .frame(height: HomeLayout.bottomPanelHeight)
                 .shadow(
@@ -409,6 +415,7 @@ extension Home.RootView {
                 /// rectangle as background
                 RoundedRectangle(cornerRadius: 15)
                     .fill(
+                    .background(appState.trioBackgroundColor(for: colorScheme))
                         colorScheme == .dark ? Color(red: 0.03921568627, green: 0.133333333, blue: 0.2156862745) : Color
                             .insulin
                             .opacity(0.2)
