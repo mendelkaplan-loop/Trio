@@ -60,6 +60,7 @@ extension Home.RootView {
                 Image(systemName: systemImage)
             }
         }
+        .font(.callout)
         .foregroundStyle(.primary)
     }
 
