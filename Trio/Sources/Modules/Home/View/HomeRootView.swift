@@ -62,7 +62,8 @@ extension Home {
             // The chart is the only flexible zone: it takes whatever height
             // the fixed slots leave over, floored at a usable minimum.
             let chartHeight = max(
-                geo.size.height - HomeLayout.headerHeight - HomeLayout.mealSlotHeight - HomeLayout.bottomZoneHeight,
+                geo.size.height - HomeLayout.headerTopPadding - HomeLayout.headerHeight - HomeLayout.mealSlotHeight
+                    - HomeLayout.bottomZoneHeight - 2 * HomeLayout.chartVerticalPadding,
                 HomeLayout.chartMinHeight
             )
             ZStack {
@@ -85,6 +86,7 @@ extension Home {
         @ViewBuilder func mainViewElements(_ geo: GeometryProxy) -> some View {
             VStack(spacing: 0) {
                 ZStack {
+            .padding(.vertical, HomeLayout.chartVerticalPadding)
                     if let apsManager = state.apsManager, let bluetoothManager = apsManager.bluetoothManager,
                        bluetoothManager.bluetoothAuthorization != .authorized
                     {
@@ -158,6 +160,7 @@ extension Home {
             .sheet(isPresented: $state.isLegendPresented) {
                 ChartLegendView(state: state)
             }
+                .padding(.top, HomeLayout.headerTopPadding)
             .sheet(isPresented: $showSnoozeSheet) {
                 SnoozeAlertsSheetView(resolver: resolver, isPresented: $showSnoozeSheet)
             }

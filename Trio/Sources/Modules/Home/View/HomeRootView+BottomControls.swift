@@ -20,7 +20,8 @@ extension Home.RootView {
         .animation(.easeInOut(duration: 0.2), value: state.bolusProgress != nil)
         // Keep clear air between the chart's x-axis labels and this zone —
         // on small screens the chart's own bottom padding resolves to 0.
-        .padding(.vertical, HomeLayout.bottomZonePadding)
+        .padding(.top, HomeLayout.bottomZoneTopPadding)
+        .padding(.bottom, HomeLayout.bottomZoneBottomPadding)
     }
 
     // MARK: Formatters
@@ -387,7 +388,7 @@ extension Home.RootView {
                 } message: {
                     Text("Select Adjustment")
                 }
-        }.padding(.horizontal, 10)
+        }.padding(.horizontal, HomeLayout.bottomPanelHorizontalPadding)
     }
 
     // MARK: Bolus progress
@@ -455,7 +456,7 @@ extension Home.RootView {
                     .padding(.horizontal, 8)
                     .padding(.bottom, 6)
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, HomeLayout.bottomPanelHorizontalPadding)
         }
     }
 }
