@@ -4,8 +4,9 @@ import CoreGraphics
 /// zone inventory (SE 3rd gen / 17 Pro / 17 Pro Max). The bobble is a fixed
 /// 130pt circle, so the header is constant; the chart gets the remainder.
 enum HomeLayout {
-    /// Zone B: air between nav bar and header.
-    static let headerTopPadding: CGFloat = 6
+    /// Zone B: air between nav bar and header; sized so an up-pointing trend
+    /// arrow clears the bar.
+    static let headerTopPadding: CGFloat = 12
     /// Zone B: pump panel / glucose bobble / loop status header.
     static let headerHeight: CGFloat = 150
     /// Zone C: meal panel slot; the row centers inside it.
