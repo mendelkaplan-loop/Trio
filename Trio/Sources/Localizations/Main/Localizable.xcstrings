@@ -20111,6 +20111,7 @@
       }
     },
     "⚠️ Safety Notifications are OFF" : {
+      "extractionState" : "stale",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -103700,6 +103701,9 @@
         }
       }
     },
+    "Edge" : {
+
+    },
     "Edit" : {
       "localizations" : {
         "bg" : {
@@ -122584,6 +122588,7 @@
       }
     },
     "Fix now by turning Notifications ON." : {
+      "extractionState" : "stale",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -124218,6 +124223,9 @@
           }
         }
       }
+    },
+    "Forcing loop…" : {
+
     },
     "Forecast Display Type" : {
       "localizations" : {
@@ -125862,6 +125870,7 @@
       }
     },
     "FreeStyle Libre" : {
+      "extractionState" : "stale",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -125984,6 +125993,12 @@
           }
         }
       }
+    },
+    "FreeStyle Libre 1 / 2 / 2+" : {
+
+    },
+    "FreeStyle Libre 3 / 3+" : {
+
     },
     "Frequency" : {
 
@@ -127866,6 +127881,7 @@
       }
     },
     "Glossary" : {
+      "comment" : "Glossary button in main view toolbar",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -136999,6 +137015,7 @@
     },
     "Home" : {
       "comment" : "Home title",
+      "extractionState" : "stale",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -164473,6 +164490,9 @@
         }
       }
     },
+    "Max" : {
+
+    },
     "Max Allowed Glucose Rise for SMB" : {
       "comment" : "Max Allowed Glucose Rise for SMB, formerly Max Delta-BG Threshold",
       "localizations" : {
@@ -172771,6 +172791,9 @@
         }
       }
     },
+    "Min" : {
+
+    },
     "Min 4 hours, max 10 hours." : {
       "localizations" : {
         "bg" : {
@@ -178483,6 +178506,9 @@
         }
       }
     },
+    "No bolus history yet" : {
+      "comment" : "Alert title when no quick-pick boluses history exists"
+    },
     "No confidence reminders are used." : {
       "comment" : "Description for BeepPreference.silent",
       "extractionState" : "manual",
@@ -180635,9 +180661,6 @@
     },
     "No profile; cannot determine basal." : {
 
-    },
-    "No bolus history yet" : {
-      "comment" : "Alert title when no quick-pick boluses history exists"
     },
     "No recent oref algorithm determination." : {
       "localizations" : {
@@ -202154,6 +202177,9 @@
         }
       }
     },
+    "Pull down to force loop" : {
+
+    },
     "Pump" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -213236,6 +213262,9 @@
           }
         }
       }
+    },
+    "Safety Notifications are OFF. Fix now by turning Notifications ON." : {
+
     },
     "Save" : {
       "comment" : "Save preset namebutton title for saving low reservoir reminder",
@@ -234121,7 +234150,7 @@
       }
     },
     "Statistics" : {
-      "comment" : "Headline Statistics",
+      "comment" : "Statistics button in main view toolbar",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -234379,6 +234408,7 @@
     },
     "Stats" : {
       "comment" : "Stats icon in main view",
+      "extractionState" : "stale",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
